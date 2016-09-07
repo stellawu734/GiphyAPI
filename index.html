@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Giphy API</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+	<style>
+	button{
+		height:50px;
+		width:125px;
+		color:black;
+		font-size:13px;
+		text-align:center;
+		margin-right:15px;
+		margin-top:10px;
+	}
+	</style>
+</head>
+<body>
+<div id="container">
+<div id="buttons" style="width:75%"></div>
+<div id="sidebar" style="width:25%; float:right">Add a button: <input type="text" id="movieName"><br>
+<input type="submit" value="submit" id="submit"></input></div>
+<div id="display"></div>
+</div>
+<script>
+
+$(document).ready(function() {
+	var movieId = "";
+	var state = "animate";
+	var buttonArray=["Star Wars", "Harry Poter", "Lord of the Rings","James Bond","Bourne",
+					"Frozen","Titanic","Avatar","The Avengers","Iron Man"];
+			for (var i = 0; i < buttonArray.length; i++) {
+						console.log(buttonArray[i]);
+						var button = $('<button/>').text(buttonArray[i]);
+						button.attr('class','btn');
+						$('#buttons').append(button);
+					};
+
+		$('.btn').on('click',function(){
+		console.log($(this).text());
+	 	var p = $(this).text();
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + p + "&api_key=dc6zaTOxFJmzC&limit=10";
+        $.ajax({
+                url: queryURL,
+                method: 'GET'
+            })
+            .done(function(response) {
+                var results = response.data;
+                console.log(response);
+                console.log(results);
+                 for (var i = 0; i < results.length; i++) {
+                    var gifDiv = $('<div class="item">')
+                    var rating = results[i].rating;
+                    var p = $('<p>').text("Rating: " + rating);
+                    var personImage = $('<img>');
+                    personImage.attr('class','gif');
+                    personImage.attr('src', results[i].images.fixed_height.url);
+                    personImage.attr('data-animate',results[i].images.fixed_height.url);
+                    personImage.attr('data-still',results[i].images.fixed_height_still.url);
+                    gifDiv.append(p)
+                    gifDiv.append(personImage)
+                    $('#display').prepend(gifDiv);
+                }
+			});
+});
+			$('#submit').on('click',function(){
+			console.log($('#movieName').val());
+			movieId = $('#movieName').val();
+			var button = $('<button/>').text(movieId).addClass('btn');
+						$('#buttons').append(button);
+						buttonArray.push(movieId);
+						console.log($('.btn'))
+
+
+		});
+			$('.gif').on('click',function(){
+			var stillURL = $(this).data("still");
+            var animateURL = $(this).data("animate");
+            console.log(state);
+            console.log(stillURL);
+            console.log(animateURL);
+            console.log(this);
+
+            if(state == "still") {
+                $(this).attr("src",animateURL);
+                state = "animate";
+            } else {
+                $(this).attr("src",stillURL);
+                state = "still";
+            }
+            console.log(this);
+            console.log(state);
+			});
+});		
+</script>
+</body>
+</html>
