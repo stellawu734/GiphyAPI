@@ -37,7 +37,7 @@ $(document).ready(function() {
 						$('#buttons').append(button);
 					};
 
-		$('.btn').on('click',function(){
+		$(document.body).on('click','.btn',function(){
 		console.log($(this).text());
 	 	var p = $(this).text();
         var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + p + "&api_key=dc6zaTOxFJmzC&limit=10";
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
 
 		});
-			$('.gif').on('click',function(){
+			$(document.body).on('click','.gif',function(){
 			var stillURL = $(this).data("still");
             var animateURL = $(this).data("animate");
             console.log(state);
